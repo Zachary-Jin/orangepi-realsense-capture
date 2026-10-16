@@ -4,9 +4,9 @@
 
 ## 中文说明
 
-这是一个使用 librealsense2 C API 从 Intel RealSense 相机采集彩色画面的
-纯 C 程序。图像保存为二进制 PPM（`P6`）格式，因此香橙派上不需要安装额外的
-图像处理库。
+本项目包含两个使用 librealsense2 C API 的纯 C 程序：`realsense_capture`
+将彩色帧保存为 PPM 图片，`realsense_web` 同时采集彩色与深度画面并提供实时
+Web 页面。
 
 ### 环境要求
 
@@ -14,6 +14,7 @@
 - Intel RealSense 相机（已在 D435i 上验证）
 - librealsense2 及其开发文件
 - 支持 C11 的 C 编译器、Make 和 pkg-config
+- FFmpeg（Web 实时画面需要）
 
 ### 编译并抓取一张图片
 
@@ -24,6 +25,44 @@ make
 
 默认以 640x480、30 FPS 启动彩色相机，并将图片保存为 `capture.ppm`。程序会先
 丢弃 30 帧，让相机的自动曝光趋于稳定。
+
+### Web 实时彩色与深度画面
+
+`realsense_web` 同时采集 640x480、60 Hz 的 RGB8 彩色流与 Z16 深度流，并通过
+内置 Web 服务显示。采集线程与 MJPEG 编码线程相互独立，编码较慢时会丢弃旧帧，
+不会反向阻塞相机采集。
+
+深度图将 0–20 米映射为近红远蓝的伪彩色画面。20 米是显示映射上限，不代表
+D435i 在该距离仍能提供可靠测量；实际有效距离受光照、目标反射率等条件影响。
+
+运行前需要确保系统中已安装 FFmpeg，然后执行：
+
+```sh
+make
+./realsense_web
+```
+
+在同一局域网的浏览器中打开 `http://<香橙派IP>:8080/`。可以用 `-p` 修改端口：
+
+```sh
+./realsense_web -p 8090
+```
+
+Web 服务监听所有网络接口且不包含身份验证，只应在可信局域网中使用。
+
+服务启动后，可以在 macOS 本地终端打开默认浏览器：
+
+```sh
+open http://192.168.1.58:8080/
+```
+
+查看服务状态与实际采集帧率：
+
+```sh
+curl http://127.0.0.1:8080/api/status
+```
+
+按 Ctrl+C 停止服务。相机和端口不能由两个 `realsense_web` 实例同时占用。
 
 ### 命令行参数
 
@@ -61,9 +100,9 @@ scp opi:~/realsense-capture/capture.ppm .
 
 ## English
 
-This pure C program uses the librealsense2 C API to capture RGB frames from an
-Intel RealSense camera. It writes binary PPM (`P6`) images, so no additional
-image-processing library is required on the Orange Pi.
+This project contains two pure C programs built on the librealsense2 C API.
+`realsense_capture` saves color frames as PPM images, while `realsense_web`
+captures color and depth streams and serves a live web interface.
 
 ### Requirements
 
@@ -71,6 +110,7 @@ image-processing library is required on the Orange Pi.
 - Intel RealSense camera (tested with a D435i)
 - librealsense2 and its development files
 - A C11 compiler, Make, and pkg-config
+- FFmpeg (required by the live web view)
 
 ### Build and capture one image
 
@@ -82,6 +122,50 @@ make
 By default, the program starts the color camera at 640x480 and 30 FPS, then
 saves one image as `capture.ppm`. It discards the first 30 frames to allow
 automatic exposure to settle.
+
+### Live color and depth web view
+
+`realsense_web` captures RGB8 color and Z16 depth streams simultaneously at
+640x480 and 60 Hz. Its built-in web server displays both streams. Camera
+capture and MJPEG encoding run independently, so a slow encoder drops stale
+frames instead of blocking camera capture.
+
+The depth view maps 0 to 20 meters from red (near) to blue (far). This is a
+visualization limit, not a claim that the D435i measures reliably at 20 meters;
+usable range depends on lighting, target reflectivity, and other conditions.
+
+Make sure FFmpeg is installed, then run:
+
+```sh
+make
+./realsense_web
+```
+
+Open `http://<orange-pi-ip>:8080/` from a browser on the same LAN. Use `-p` to
+select another port:
+
+```sh
+./realsense_web -p 8090
+```
+
+The server listens on all network interfaces and has no authentication. Use it
+only on a trusted LAN.
+
+After starting the service, open the default browser from a local macOS
+terminal:
+
+```sh
+open http://192.168.1.58:8080/
+```
+
+Inspect service status and the measured capture rate with:
+
+```sh
+curl http://127.0.0.1:8080/api/status
+```
+
+Press Ctrl+C to stop the service. The camera and listening port cannot be used
+by two `realsense_web` instances at the same time.
 
 ### Command-line options
 

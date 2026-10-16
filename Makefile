@@ -5,10 +5,13 @@ LDLIBS += $(shell pkg-config --libs realsense2)
 
 .PHONY: all clean
 
-all: realsense_capture
+all: realsense_capture realsense_web
 
 realsense_capture: realsense_capture.c
 	$(CC) $(CFLAGS) $< -o $@ $(LDLIBS)
 
+realsense_web: realsense_web.c
+	$(CC) $(CFLAGS) $< -o $@ $(LDLIBS) -pthread
+
 clean:
-	rm -f realsense_capture
+	rm -f realsense_capture realsense_web

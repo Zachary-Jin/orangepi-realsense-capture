@@ -1,3 +1,4 @@
 realsense_capture
+realsense_web
 *.ppm
 /test_capture.png
