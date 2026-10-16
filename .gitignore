@@ -1,0 +1,3 @@
+realsense_capture
+*.ppm
+/test_capture.png
