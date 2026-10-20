@@ -6,7 +6,7 @@
 
 Pure C · librealsense2 · RGB & Depth · MJPEG
 
-[中文说明](#中文说明) · [English](#english) · [Windows 打开预览](#在电脑上打开浏览器)
+[中文说明](#中文说明) · [English](#english) · [macOS 打开预览](#macos) · [Windows 打开预览](#windows)
 
 </div>
 
@@ -80,7 +80,17 @@ make
 
 先启动香橙派上的 `realsense_web`，再在**自己电脑的本地终端**中执行对应命令，打开默认浏览器。如果正在通过 SSH 控制香橙派，请另开一个本地终端。
 
-**Windows · PowerShell（包括 Windows Terminal 的 PowerShell 标签页）**
+#### macOS
+
+在 Mac 本机的「终端」中运行以下命令，打开默认浏览器：
+
+```sh
+open "http://192.168.1.58:8080/"
+```
+
+#### Windows
+
+**PowerShell（包括 Windows Terminal 的 PowerShell 标签页）**
 
 ```powershell
 Start-Process "http://192.168.1.58:8080/"
@@ -94,13 +104,9 @@ start "" "http://192.168.1.58:8080/"
 
 CMD 中的第一个 `""` 是空窗口标题，请保留。Windows Terminal 中应根据当前标签页使用的 PowerShell 或 CMD 选择命令。
 
-**macOS · 终端**
+#### Linux
 
-```sh
-open "http://192.168.1.58:8080/"
-```
-
-**Linux · 桌面终端（需安装 xdg-utils）**
+桌面终端（需安装 xdg-utils）：
 
 ```sh
 xdg-open "http://192.168.1.58:8080/"
@@ -288,7 +294,17 @@ Start the live color and depth preview:
 
 Start `realsense_web` on the Orange Pi first. Then run the appropriate command in a **local terminal on your computer** to open the default browser. If you are connected to the Orange Pi over SSH, open a separate local terminal.
 
-**Windows · PowerShell (including a PowerShell tab in Windows Terminal)**
+#### macOS Terminal
+
+Run this command in Terminal on your Mac to open the default browser:
+
+```sh
+open "http://192.168.1.58:8080/"
+```
+
+#### Windows Terminal Commands
+
+**PowerShell (including a PowerShell tab in Windows Terminal)**
 
 ```powershell
 Start-Process "http://192.168.1.58:8080/"
@@ -302,13 +318,9 @@ start "" "http://192.168.1.58:8080/"
 
 Keep the first `""` in the CMD command: it supplies an empty window title. In Windows Terminal, choose the command for the shell running in your tab.
 
-**macOS · Terminal**
+#### Linux Desktop Terminal
 
-```sh
-open "http://192.168.1.58:8080/"
-```
-
-**Linux · Desktop terminal (requires xdg-utils)**
+Requires xdg-utils:
 
 ```sh
 xdg-open "http://192.168.1.58:8080/"
